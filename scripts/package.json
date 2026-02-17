@@ -1,0 +1,16 @@
+{
+  "name": "croper-database-seeder",
+  "version": "1.0.0",
+  "description": "Database seeding script for Croper Management API",
+  "main": "seed-database.js",
+  "scripts": {
+    "seed": "node seed-database.js"
+  },
+  "keywords": [
+    "seeding",
+    "database",
+    "faker"
+  ],
+  "author": "Alex Coronell",
+  "license": "UNLICENSED"
+}

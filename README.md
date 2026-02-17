@@ -206,6 +206,17 @@ pnpm run build
 pnpm run start:prod
 ```
 
+6. **Seed the database** (optional)
+```bash
+# Populate with test data
+pnpm run seed
+```
+
+This will create:
+- 1 admin user (username: `admin`, password: `admin12345`)
+- 10 customer users with fake data
+- 50 products with fake data
+
 ### Quick Start with Docker
 
 ```bash
@@ -214,6 +225,9 @@ docker-compose up -d
 
 # Start the application
 pnpm run start:dev
+
+# Seed the database (optional)
+pnpm run seed
 ```
 
 The API will be available at:
@@ -445,6 +459,82 @@ croper-crud-backend-nestjs/
 
 ---
 
+## 🌱 Database Seeding
+
+The project includes a convenient seeding script to populate your database with test data.
+
+### What Gets Created
+
+- **1 Admin User**
+  - Username: `admin`
+  - Password: `admin12345`
+  - Full access to all resources
+
+- **10 Customer Users**
+  - Realistic fake data (names, emails, usernames)
+  - Password: `Password123!` (same for all)
+  - Limited access (own profile only)
+
+- **50 Products**
+  - Various categories (Grains, Tools, Seeds, Livestock, etc.)
+  - Random prices ($10 - $500)
+  - Random stock (50 - 1000 units)
+
+### Running the Seeder
+
+```bash
+# Make sure MongoDB and API are running
+docker-compose up -d
+pnpm run start:dev
+
+# Run the seeding script
+pnpm run seed
+```
+
+### Output Example
+
+```
+🌱 Starting database seeding...
+
+📋 Step 1: Creating admin user...
+✓ Created user: admin (admin)
+
+📋 Step 2: Creating 10 customer users...
+✓ Created user: johndoe123 (customer)
+✓ Created user: janesmith456 (customer)
+...
+
+📋 Step 3: Logging in as admin...
+✓ Logged in as: admin
+
+📋 Step 4: Creating 50 products...
+✓ Created product: Premium Wheat
+✓ Created product: Organic Corn
+...
+
+✅ Database seeding completed successfully!
+
+📊 Summary:
+   - 1 Admin user created
+   - 10 Customer users created
+   - 50 Products created
+
+🔐 Admin credentials:
+   Username: admin
+   Password: admin12345
+```
+
+### Features
+
+- ✅ **Idempotent**: Safe to run multiple times
+- ✅ **No Dependencies**: Pure JavaScript, no npm install needed
+- ✅ **Error Handling**: Clear error messages
+- ✅ **Realistic Data**: Faker-like data generation
+
+For more details, see [scripts/README.md](scripts/README.md)
+
+---
+
 ## 🔧 Environment Variables
 
 Create a `.env` file in the root directory:
@@ -508,6 +598,11 @@ pnpm run lint           # Lint and auto-fix
 pnpm run lint:fix       # Fix all linting issues
 pnpm run format         # Format code with Prettier
 pnpm run pre-commit     # Run pre-commit checks
+```
+
+### Database
+```bash
+pnpm run seed           # Populate database with test data
 ```
 
 ### Docker

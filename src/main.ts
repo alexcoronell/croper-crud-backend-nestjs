@@ -13,8 +13,13 @@ async function bootstrap() {
 
   app.use(cookieParser()); // Enable cookie parsing
 
-  // 2. Enable CORS so your Frontend (Exercise 2) can connect without issues
-  app.enableCors({ credentials: true });
+  // 2. Enable CORS so your Frontend can connect without issues
+  app.enableCors({
+    origin: ['http://localhost:4200'], // Angular default port
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
   // 3. Global Validation Pipe
   // whitelist: true removes any property not defined in the DTO

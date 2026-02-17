@@ -55,9 +55,10 @@ export class AuthService {
       path: '/', // Cookie available for all routes
     });
 
-    // 6. Return user data (without token in body)
+    // 6. Return user data and token (token in body for API clients, also in cookie for browsers)
     return {
       message: 'Login successful',
+      access_token: token, // Include token in response for API clients
       user: {
         fullName: user.fullName,
         username: user.username,

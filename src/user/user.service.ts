@@ -140,4 +140,27 @@ export class UserService {
   async findByUsernameForAuth(username: string): Promise<User | null> {
     return this.userModel.findOne({ username }).select('+password').exec();
   }
+
+  /**
+   * Creates the first admin user (bootstrap).
+   * Only works if no admin users exist in the database.
+   * This is a special endpoint for initial setup.
+   */
+  async createBootstrapAdmin(
+    createUserDto: CreateUserDto,
+  ): Promise<ResponseUserDto> {
+    // Check if any admin already exists
+    const existingAdmin = await this.userModel
+      .findOne({ role: 'admin' })
+      .exec();
+
+    if (existingAdmin) {
+      throw new BadRequestException(
+        'Admin user already exists. Use /user/create-admin endpoint with admin authentication.',
+      );
+    }
+
+    // Create the first admin
+    return this.create(createUserDto);
+  }
 }

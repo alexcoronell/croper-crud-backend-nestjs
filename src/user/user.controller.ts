@@ -28,15 +28,55 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({ summary: 'Register a new customer user (public)' })
   @ApiResponse({
     status: 201,
-    description: 'User created successfully',
+    description: 'Customer user created successfully',
     type: ResponseUserDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
-    return this.userService.create(createUserDto);
+    // Force role to customer for public registration
+    const customerDto = { ...createUserDto, role: UserRole.CUSTOMER };
+    return this.userService.create(customerDto);
+  }
+
+  @Post('create-admin')
+  @ApiOperation({ summary: 'Create an admin user (Admin only)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Admin user created successfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN)
+  createAdmin(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+    // Force role to admin
+    const adminDto = { ...createUserDto, role: UserRole.ADMIN };
+    return this.userService.create(adminDto);
+  }
+
+  @Post('bootstrap-admin')
+  @ApiOperation({
+    summary: 'Create first admin user (only works if no admins exist)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'First admin user created successfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request or admin already exists',
+  })
+  async bootstrapAdmin(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<ResponseUserDto> {
+    // Force role to admin
+    const adminDto = { ...createUserDto, role: UserRole.ADMIN };
+    return this.userService.createBootstrapAdmin(adminDto);
   }
 
   @Get()
