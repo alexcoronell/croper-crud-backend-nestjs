@@ -21,5 +21,12 @@ jest.mock('@faker-js/faker', () => ({
     database: {
       mongodbObjectId: jest.fn(() => '507f1f77bcf86cd799439011'),
     },
+    person: {
+      fullName: jest.fn(() => 'John Doe'),
+    },
+    internet: {
+      username: jest.fn(() => 'testuser'),
+      email: jest.fn(() => 'test@example.com'),
+    },
   },
 }));

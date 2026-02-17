@@ -23,7 +23,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@faker/*": ["faker/*"],
-      "@product/*": ["src/product/*"]
+      "@product/*": ["src/product/*"],
+      "@user/*": ["src/user/*"]
     }
   }
 }

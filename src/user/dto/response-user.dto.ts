@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '../enums/user-role.enum';
 
 export class ResponseUserDto {
   @ApiProperty({ example: 'John Doe' })
@@ -9,4 +10,7 @@ export class ResponseUserDto {
 
   @ApiProperty({ example: 'admin@agro.com' })
   email: string;
+
+  @ApiProperty({ example: 'customer' })
+  role: UserRole;
 }
