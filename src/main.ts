@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,8 +11,10 @@ async function bootstrap() {
   // 1. Set global prefix for all routes (e.g., http://localhost:3000/api/v1/user)
   app.setGlobalPrefix('api/v1');
 
+  app.use(cookieParser()); // Enable cookie parsing
+
   // 2. Enable CORS so your Frontend (Exercise 2) can connect without issues
-  app.enableCors();
+  app.enableCors({ credentials: true });
 
   // 3. Global Validation Pipe
   // whitelist: true removes any property not defined in the DTO

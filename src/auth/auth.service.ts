@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 
 /* Services */
@@ -16,38 +17,47 @@ export class AuthService {
   ) {}
 
   /**
-   * Validates user credentials and generates a JWT access token.
-   * Uses username and password for authentication.
-   * @param loginDto The credentials provided by the user.
-   * @returns An object containing the access token and non-sensitive user data.
+   * Validates user credentials and generates a JWT stored in an HttpOnly cookie.
+   * @param loginDto Credentials
+   * @param response Express Response object to set the cookie
    */
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, response: Response) {
     const { username, password } = loginDto;
 
-    // 1. Find user by username using the internal method that includes password
+    // 1. Find user by username (including password field)
     const user = await this.userService.findByUsernameForAuth(username);
 
-    // 2. Validate user existence and password hash
+    // 2. Validate credentials
     if (!user || !bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException('Invalid username or password');
     }
 
-    // 3. Check if the user account is active
+    // 3. Check account status
     if (!user.isActive) {
       throw new UnauthorizedException('User account is disabled');
     }
 
-    // 4. Prepare the JWT payload
-    // We include sub (standard for ID), username, and role for RBAC logic in the frontend
+    // 4. Prepare JWT Payload
     const payload = {
       sub: user._id,
       username: user.username,
       role: user.role,
     };
 
-    // 5. Return the token and public user information for the frontend (Exercise 2)
+    const token = this.jwtService.sign(payload);
+
+    // 5. Set HttpOnly Cookie
+    response.cookie('access_token', token, {
+      httpOnly: true, // Prevents JS access (XSS protection)
+      secure: process.env.NODE_ENV === 'production', // Only sends over HTTPS in production
+      sameSite: 'lax', // CSRF protection
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
+      path: '/', // Cookie available for all routes
+    });
+
+    // 6. Return user data (without token in body)
     return {
-      access_token: this.jwtService.sign(payload),
+      message: 'Login successful',
       user: {
         fullName: user.fullName,
         username: user.username,
@@ -58,7 +68,20 @@ export class AuthService {
   }
 
   /**
-   * Optional: Token verification helper if needed for custom flows.
+   * Clears the authentication cookie.
+   * @param response Express Response object
+   */
+  logout(response: Response) {
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+    });
+    return { message: 'Logged out successfully' };
+  }
+
+  /**
+   * Token verification helper.
    * @param token JWT string
    */
   verifyToken(token: string) {
