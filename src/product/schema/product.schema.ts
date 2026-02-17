@@ -33,6 +33,12 @@ export class Product extends Document {
   @ApiProperty({ example: true, default: true })
   @Prop({ default: true })
   isActive: boolean;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

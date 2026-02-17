@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "types": ["jest", "node"],
+    "baseUrl": "./",
+    "paths": {
+      "@faker/*": ["faker/*"],
+      "@product/*": ["src/product/*"]
+    }
+  }
+}

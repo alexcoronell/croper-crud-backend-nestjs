@@ -22,6 +22,7 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@faker/*": ["faker/*"],
       "@product/*": ["src/product/*"]
     }
   }

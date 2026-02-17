@@ -45,6 +45,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@faker-js/faker": "^10.3.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -68,10 +69,29 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
+    "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/../jest.setup.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/coverage/",
+      "<rootDir>/dist/",
+      "<rootDir>/faker/",
+      "<rootDir>/test/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/coverage/",
+      "<rootDir>/dist/",
+      "<rootDir>/faker/",
+      "<rootDir>/test/"
+    ],
+    "moduleNameMapper": {
+      "^@faker-js/faker$": "@faker-js/faker",
+      "@faker/(.*)": "<rootDir>/../faker/$1",
+      "@product/(.*)": "<rootDir>/product/$1"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@faker-js)"
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
