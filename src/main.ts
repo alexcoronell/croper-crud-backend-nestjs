@@ -18,16 +18,15 @@ async function bootstrap() {
     origin: ['http://localhost:4200'], // Angular default port
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // 3. Global Validation Pipe
-  // whitelist: true removes any property not defined in the DTO
-  // forbidNonWhitelisted: true throws an error if extra properties are sent
+  // whitelist: true removes any property not defined in the DTO (silently ignores extra properties)
+  // forbidNonWhitelisted: false allows extra properties to be sent without throwing errors
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: true, // Strip properties that don't have decorators
+      forbidNonWhitelisted: true, // Don't throw error on extra properties, just ignore them
       transform: true, // Automatically transforms payloads to DTO instances
     }),
   );

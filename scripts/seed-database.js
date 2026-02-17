@@ -83,8 +83,10 @@ function generateProduct() {
     };
 }
 
-// HTTP request helper
-function makeRequest(method, path, data = null, token = null) {
+// HTTP request helper with cookie support
+let cookieJar = ''; // Store cookies between requests
+
+function makeRequest(method, path, data = null, useCookies = false) {
     return new Promise((resolve, reject) => {
         const url = new URL(path, API_BASE_URL);
         const options = {
@@ -94,14 +96,20 @@ function makeRequest(method, path, data = null, token = null) {
             }
         };
 
-        if (token) {
-            options.headers['Authorization'] = `Bearer ${token}`;
+        // Add cookies to request if we have them
+        if (useCookies && cookieJar) {
+            options.headers['Cookie'] = cookieJar;
         }
 
         const client = url.protocol === 'https:' ? https : http;
 
         const req = client.request(url, options, (res) => {
             let body = '';
+
+            // Capture Set-Cookie headers
+            if (res.headers['set-cookie']) {
+                cookieJar = res.headers['set-cookie'].map(cookie => cookie.split(';')[0]).join('; ');
+            }
 
             res.on('data', (chunk) => {
                 body += chunk;
@@ -165,18 +173,18 @@ async function createBootstrapAdmin(userData) {
 
 async function loginUser(username, password) {
     try {
-        const response = await makeRequest('POST', 'auth/login', { username, password });
+        const response = await makeRequest('POST', 'auth/login', { username, password }, false);
         console.log(`✓ Logged in as: ${username}`);
-        return response.access_token;
+        return true; // Cookie is now stored in cookieJar
     } catch (error) {
         console.error(`✗ Failed to login as ${username}:`, error.message);
         throw error;
     }
 }
 
-async function createProduct(productData, token) {
+async function createProduct(productData) {
     try {
-        const response = await makeRequest('POST', 'product', productData, token);
+        const response = await makeRequest('POST', 'product', productData, true); // Use cookies
         console.log(`✓ Created product: ${productData.name}`);
         return response;
     } catch (error) {
@@ -205,17 +213,17 @@ async function seedDatabase() {
         await Promise.all(customerPromises);
         console.log('');
 
-        // Step 3: Login as admin to get token
+        // Step 3: Login as admin to get cookie
         console.log('📋 Step 3: Logging in as admin...');
-        const adminToken = await loginUser(ADMIN_USER.username, ADMIN_USER.password);
+        await loginUser(ADMIN_USER.username, ADMIN_USER.password);
         console.log('');
 
-        // Step 4: Create products
+        // Step 4: Create products using cookie authentication
         console.log('📋 Step 4: Creating 50 products...');
         const productPromises = [];
         for (let i = 0; i < 50; i++) {
             const productData = generateProduct();
-            productPromises.push(createProduct(productData, adminToken));
+            productPromises.push(createProduct(productData));
         }
         await Promise.all(productPromises);
         console.log('');

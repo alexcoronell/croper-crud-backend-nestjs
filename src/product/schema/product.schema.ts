@@ -30,10 +30,6 @@ export class Product extends Document {
   @Prop({ required: true, index: true }) // Index for faster queries
   category: string;
 
-  @ApiProperty({ example: true, default: true })
-  @Prop({ default: true })
-  isActive: boolean;
-
   @ApiProperty()
   createdAt: Date;
 

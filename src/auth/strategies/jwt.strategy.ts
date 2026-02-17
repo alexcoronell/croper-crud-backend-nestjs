@@ -26,8 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     super({
-      // Extract JWT from the Authorization header as a Bearer token
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // Extract JWT from cookies instead of Authorization header
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: any): string | null => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          return (request?.cookies?.access_token as string | undefined) ?? null;
+        },
+      ]),
       // Ensure the token has not expired
       ignoreExpiration: false,
       // Secret key for verification from .env
@@ -41,7 +46,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @param payload Decoded JWT data
    * @returns Object to be attached to the request
    */
-  validate(payload: JwtPayload) {
+  validate(payload: JwtPayload): {
+    userId: string;
+    username: string;
+    role: UserRole;
+  } {
     // If you need to check if the user still exists or is active in DB,
     // you could inject UserService and perform a check here.
 

@@ -40,7 +40,6 @@ export const generateProductModelFaker = (
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   _id: id as any,
   ...createProductFaker(),
-  isActive: true,
   createdAt: new Date(),
   updatedAt: new Date(),
 });
