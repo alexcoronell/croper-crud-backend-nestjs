@@ -65,11 +65,28 @@ export class UserService {
   }
 
   /**
-   * Retrieves all active users from the database.
+   * Retrieves a paginated list of active users.
+   * @param page Current page number (defaults to 1)
+   * @param limit Number of items per page (defaults to 10)
+   * @returns Paginated user data and metadata
    */
-  async findAll(): Promise<ResponseUserDto[]> {
-    const users = await this.userModel.find({ isActive: true }).exec();
-    return users.map((user) => this.mapToResponseDto(user));
+  async findAll(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+
+    // Execute search and count in parallel for better performance
+    const [users, total] = await Promise.all([
+      this.userModel.find({ isActive: true }).skip(skip).limit(limit).exec(),
+      this.userModel.countDocuments({ isActive: true }),
+    ]);
+
+    const data = users.map((user) => this.mapToResponseDto(user));
+
+    return {
+      data,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   /**

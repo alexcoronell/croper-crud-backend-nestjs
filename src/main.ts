@@ -26,7 +26,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Strip properties that don't have decorators
-      forbidNonWhitelisted: true, // Don't throw error on extra properties, just ignore them
+      forbidNonWhitelisted: false, // Don't throw error on extra properties, just ignore them
       transform: true, // Automatically transforms payloads to DTO instances
     }),
   );

@@ -40,6 +40,7 @@ describe('UserService', () => {
   mockUserModel.findById = jest.fn();
   mockUserModel.findByIdAndUpdate = jest.fn();
   mockUserModel.findByIdAndDelete = jest.fn();
+  mockUserModel.countDocuments = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -94,20 +95,42 @@ describe('UserService', () => {
   });
 
   /**
-   * Test retrieval with mapping
+   * Test retrieval with pagination
    */
   describe('findAll', () => {
-    it('should return an array of ResponseUserDto', async () => {
+    it('should return paginated users with metadata', async () => {
       const mockUsers = generateManyUserModels(2);
       mockUserModel.find.mockReturnValue({
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue(mockUsers),
       });
+      mockUserModel.countDocuments.mockResolvedValue(15);
 
-      const result = await service.findAll();
+      const result = await service.findAll(1, 10);
 
-      expect(result).toHaveLength(2);
-      expect(result[0]).not.toHaveProperty('password');
-      expect(result[0]).toHaveProperty('role');
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0]).not.toHaveProperty('password');
+      expect(result.data[0]).toHaveProperty('role');
+      expect(result.total).toBe(15);
+      expect(result.page).toBe(1);
+      expect(result.lastPage).toBe(2);
+    });
+
+    it('should handle pagination with page 2', async () => {
+      const mockUsers = generateManyUserModels(3);
+      mockUserModel.find.mockReturnValue({
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(mockUsers),
+      });
+      mockUserModel.countDocuments.mockResolvedValue(25);
+
+      const result = await service.findAll(2, 10);
+
+      expect(result.page).toBe(2);
+      expect(result.total).toBe(25);
+      expect(result.lastPage).toBe(3);
     });
   });
 

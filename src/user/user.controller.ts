@@ -9,9 +9,12 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { UserRole } from './enums/user-role.enum';
@@ -80,12 +83,27 @@ export class UserController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all active users' })
-  @ApiResponse({ status: 200, type: [ResponseUserDto] })
+  @ApiOperation({ summary: 'Get all active users with pagination' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number (default: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page (default: 10)',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated list of users' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRole.ADMIN)
-  findAll(): Promise<ResponseUserDto[]> {
-    return this.userService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.userService.findAll(page, limit);
   }
 
   @Get(':id')
