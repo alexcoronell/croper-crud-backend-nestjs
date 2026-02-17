@@ -7,7 +7,8 @@
     "paths": {
       "@faker/*": ["faker/*"],
       "@product/*": ["src/product/*"],
-      "@user/*": ["src/user/*"]
+      "@user/*": ["src/user/*"],
+      "@auth/*": ["src/auth/*"]
     }
   }
 }

@@ -8,9 +8,16 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+
 import { UserService } from './user.service';
+import { UserRole } from './enums/user-role.enum';
+import { RolesGuard } from '@auth/guards/roles.guard';
+import { UserOwnershipGuard } from '@auth/guards/user-ownership.guard';
+import { Roles } from '@auth/decorators/roles.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
@@ -35,6 +42,8 @@ export class UserController {
   @Get()
   @ApiOperation({ summary: 'Get all active users' })
   @ApiResponse({ status: 200, type: [ResponseUserDto] })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN)
   findAll(): Promise<ResponseUserDto[]> {
     return this.userService.findAll();
   }
@@ -43,14 +52,17 @@ export class UserController {
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiResponse({ status: 200, type: ResponseUserDto })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN)
   findOne(@Param('id') id: string): Promise<ResponseUserDto> {
     return this.userService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update user profile' })
+  @ApiOperation({ summary: 'Update user profile (Owner or Admin only)' })
   @ApiResponse({ status: 200, type: ResponseUserDto })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @UseGuards(AuthGuard('jwt'), UserOwnershipGuard)
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -63,6 +75,8 @@ export class UserController {
   @ApiOperation({ summary: 'Delete a user' })
   @ApiResponse({ status: 204, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string): Promise<void> {
     return this.userService.remove(id);
   }

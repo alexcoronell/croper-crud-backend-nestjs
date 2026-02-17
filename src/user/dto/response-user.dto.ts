@@ -8,7 +8,7 @@ export class ResponseUserDto {
   @ApiProperty({ example: 'johndoe88' })
   username: string;
 
-  @ApiProperty({ example: 'admin@agro.com' })
+  @ApiProperty({ example: 'admin@email.com' })
   email: string;
 
   @ApiProperty({ example: 'customer' })

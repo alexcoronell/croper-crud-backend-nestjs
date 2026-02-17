@@ -94,7 +94,8 @@
       "^@faker-js/faker$": "@faker-js/faker",
       "@faker/(.*)": "<rootDir>/../faker/$1",
       "@product/(.*)": "<rootDir>/product/$1",
-      "@user/(.*)": "<rootDir>/user/$1"
+      "@user/(.*)": "<rootDir>/user/$1",
+      "@auth/(.*)": "<rootDir>/auth/$1"
     },
     "transformIgnorePatterns": [
       "node_modules/(?!@faker-js)"
