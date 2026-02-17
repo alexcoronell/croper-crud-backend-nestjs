@@ -30,3 +30,8 @@ jest.mock('@faker-js/faker', () => ({
     },
   },
 }));
+
+jest.mock('bcrypt', () => ({
+  hashSync: jest.fn(() => 'hashed_password'),
+  compareSync: jest.fn(() => true),
+}));

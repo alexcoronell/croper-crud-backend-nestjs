@@ -132,4 +132,12 @@ export class UserService {
   async findByEmailForAuth(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).select('+password').exec();
   }
+
+  /**
+   * Internal method to find a user by username for authentication purposes.
+   * Includes the password field.
+   */
+  async findByUsernameForAuth(username: string): Promise<User | null> {
+    return this.userModel.findOne({ username }).select('+password').exec();
+  }
 }
