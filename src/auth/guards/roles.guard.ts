@@ -8,10 +8,27 @@ import { Reflector } from '@nestjs/core';
 import { UserRole } from '@user/enums/user-role.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
+/**
+ * Guard that checks if the authenticated user has the required role(s) to access a route.
+ * Works in conjunction with the @Roles() decorator and JwtAuthGuard.
+ *
+ * @example
+ * ```typescript
+ * @UseGuards(AuthGuard('jwt'), RolesGuard)
+ * @Roles(UserRole.ADMIN)
+ * async adminOnlyRoute() { ... }
+ * ```
+ */
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
+  /**
+   * Determines if the current user has permission to access the route.
+   * @param context Execution context containing request information
+   * @returns true if user has required role, false otherwise
+   * @throws ForbiddenException if user lacks required permissions
+   */
   canActivate(context: ExecutionContext): boolean {
     // 1. Get the required roles from the decorator
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(

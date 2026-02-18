@@ -6,8 +6,27 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@user/enums/user-role.enum';
 
+/**
+ * Guard that ensures users can only access or modify their own resources.
+ * Admins bypass this check and can access any resource.
+ *
+ * Validates that the user ID in the JWT matches the ID in the route parameter.
+ *
+ * @example
+ * ```typescript
+ * @UseGuards(AuthGuard('jwt'), UserOwnershipGuard)
+ * @Patch(':id')
+ * updateProfile(@Param('id') id: string) { ... }
+ * ```
+ */
 @Injectable()
 export class UserOwnershipGuard implements CanActivate {
+  /**
+   * Determines if the current user can access the requested resource.
+   * @param context Execution context containing request information
+   * @returns true if user owns the resource or is an admin
+   * @throws ForbiddenException if user tries to access another user's resource
+   */
   canActivate(context: ExecutionContext): boolean {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const request = context.switchToHttp().getRequest();
