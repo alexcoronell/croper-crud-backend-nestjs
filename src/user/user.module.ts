@@ -1,7 +1,10 @@
+// External dependencies - NestJS core
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserService } from './user.service';
+
+// Local imports
 import { UserController } from './user.controller';
+import { UserService } from './user.service';
 import { User, UserSchema } from './schema/user.schema';
 
 @Module({

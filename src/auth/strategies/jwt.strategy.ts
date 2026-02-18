@@ -1,9 +1,12 @@
+// External dependencies - NestJS core
 import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
 
-/* Interfaces */
+// External dependencies - Third-party
+import { ExtractJwt, Strategy } from 'passport-jwt';
+
+// Internal modules - Using alias
 import { UserRole } from '@user/enums/user-role.enum';
 
 /**

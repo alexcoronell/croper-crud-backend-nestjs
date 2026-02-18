@@ -1,7 +1,12 @@
+// External dependencies - NestJS core
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+// External dependencies - Third-party
 import cookieParser from 'cookie-parser';
+
+// Internal modules
 import { AppModule } from './app.module';
 
 async function bootstrap() {

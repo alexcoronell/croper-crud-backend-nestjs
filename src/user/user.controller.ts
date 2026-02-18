@@ -1,3 +1,4 @@
+// External dependencies - NestJS core
 import {
   Controller,
   Get,
@@ -16,14 +17,17 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
-import { UserService } from './user.service';
-import { UserRole } from './enums/user-role.enum';
+// Internal modules - Using alias
+import { Roles } from '@auth/decorators/roles.decorator';
 import { RolesGuard } from '@auth/guards/roles.guard';
 import { UserOwnershipGuard } from '@auth/guards/user-ownership.guard';
-import { Roles } from '@auth/decorators/roles.decorator';
+
+// Local imports
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRole } from './enums/user-role.enum';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @Controller('user')

@@ -1,19 +1,20 @@
+// External dependencies - NestJS core
 import {
   Injectable,
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+
+// External dependencies - Third-party
 import * as bcrypt from 'bcrypt';
+import { Model, Types } from 'mongoose';
 
-/* Schema & Interfaces */
-import { User } from './schema/user.schema';
-
-/* DTOs */
+// Local imports
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './schema/user.schema';
 
 @Injectable()
 export class UserService {

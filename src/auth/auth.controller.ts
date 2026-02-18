@@ -1,3 +1,4 @@
+// External dependencies - NestJS core
 import {
   Controller,
   Post,
@@ -6,10 +7,12 @@ import {
   HttpStatus,
   Res,
 } from '@nestjs/common';
-import type { Response } from 'express'; // Import from express
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-/* Services & DTOs */
+// External dependencies - Third-party
+import type { Response } from 'express';
+
+// Local imports
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 

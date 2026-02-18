@@ -1,12 +1,15 @@
+// External dependencies - NestJS core
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+
+// External dependencies - Third-party
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 
-/* Services */
-import { UserService } from '../user/user.service';
+// Internal modules - Using alias
+import { UserService } from '@user/user.service';
 
-/* DTOs */
+// Local imports
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()

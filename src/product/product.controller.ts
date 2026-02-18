@@ -1,3 +1,4 @@
+// External dependencies - NestJS core
 import {
   Controller,
   Get,
@@ -9,6 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiTags,
   ApiOperation,
@@ -16,15 +18,16 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 
-import { RolesGuard } from '@auth/guards/roles.guard';
+// Internal modules - Using alias
 import { Roles } from '@auth/decorators/roles.decorator';
-
+import { RolesGuard } from '@auth/guards/roles.guard';
 import { UserRole } from '@user/enums/user-role.enum';
-import { ProductService } from './product.service';
+
+// Local imports
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductService } from './product.service';
 
 @ApiTags('product') // Categorizes endpoints in Swagger UI
 @Controller('product')

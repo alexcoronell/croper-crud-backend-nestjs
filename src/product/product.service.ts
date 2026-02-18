@@ -1,13 +1,18 @@
+// External dependencies - NestJS core
 import {
   Injectable,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+
+// External dependencies - Third-party
 import { Model, Types } from 'mongoose';
-import { Product } from './schema/product.schema';
+
+// Local imports
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Product } from './schema/product.schema';
 
 @Injectable()
 export class ProductService {
