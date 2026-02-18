@@ -30,6 +30,21 @@ import { ResponseUserDto } from './dto/response-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Post()
+  @ApiOperation({ summary: 'Create a new user with any role (Admin only)' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN)
+  create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+    return this.userService.create(createUserDto);
+  }
+
   @Post('register')
   @ApiOperation({ summary: 'Register a new customer user (public)' })
   @ApiResponse({
@@ -38,27 +53,10 @@ export class UserController {
     type: ResponseUserDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+  register(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
     // Force role to customer for public registration
     const customerDto = { ...createUserDto, role: UserRole.CUSTOMER };
     return this.userService.create(customerDto);
-  }
-
-  @Post('create-admin')
-  @ApiOperation({ summary: 'Create an admin user (Admin only)' })
-  @ApiResponse({
-    status: 201,
-    description: 'Admin user created successfully',
-    type: ResponseUserDto,
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN)
-  createAdmin(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
-    // Force role to admin
-    const adminDto = { ...createUserDto, role: UserRole.ADMIN };
-    return this.userService.create(adminDto);
   }
 
   @Post('bootstrap-admin')

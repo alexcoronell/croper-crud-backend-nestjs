@@ -27,6 +27,7 @@ export class UserService {
    */
   private mapToResponseDto(user: User): ResponseUserDto {
     return {
+      _id: user._id.toString(),
       fullName: user.fullName,
       username: user.username,
       email: user.email,
